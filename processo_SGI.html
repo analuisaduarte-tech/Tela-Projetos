@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGI - Acompanhamento do Processo | BrSupply</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <button id="menu-toggle" class="btn btn-secondary" onclick="app.toggleSidebar()" style="padding: 8px 12px; margin-right: 16px;">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="logo" onclick="window.location.href='index.html'" style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1; gap: 2px; cursor: pointer;">
+                <div style="font-size: 26px; font-weight: 900; letter-spacing: -0.5px; font-family: 'Inter', sans-serif;">
+                    <span style="color: #f78f1e;">Br</span><span style="color: #555555;">SUPPLY</span>
+                </div>
+                <div style="font-size: 11px; font-weight: 500; color: #666666; letter-spacing: 0.2px;">
+                    Suprimentos Corporativos
+                </div>
+            </div>
+            <nav class="nav-links" style="margin-left: 30px;">
+                <button class="nav-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-folder-tree"></i> Projetos</button>
+                <button class="nav-btn active" onclick="window.location.href='#'"><i class="fa-solid fa-diagram-project"></i> SGI</button>
+            </nav>
+            <div class="top-actions">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Ana&background=f78f1e&color=fff" alt="User Avatar" class="avatar">
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <main class="content-area" style="max-width: 1200px; margin: 0 auto; padding-top: 30px;">
+                
+                <div class="view-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="display: flex; align-items: center; gap: 10px; margin: 0;">
+                        <button class="btn btn-secondary" onclick="window.history.back()" title="Voltar"><i class="fa-solid fa-arrow-left"></i></button> 
+                        Acompanhamento do Processo SGI
+                    </h2>
+                    <div id="header-actions"></div>
+                </div>
+
+                <!-- Detalhes Gerais -->
+                <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; border: 1px solid var(--border-color);">
+                    <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #f8fafc; border-radius: 8px 8px 0 0;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #334155; margin: 0;"><i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> Dados do Processo</h3>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div style="display: flex; gap: 40px; align-items: stretch;">
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #f78f1e 0%, #d47411 100%); color: white; padding: 20px 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: 600; opacity: 0.9;">Código da Área</span>
+                                <span id="sgi-id" style="font-size: 3rem; font-weight: 800; line-height: 1.2;">--</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 16px; flex: 1;">
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 120px; color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Área:</div>
+                                    <div id="sgi-area" style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">Carregando...</div>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 120px; color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Responsável:</div>
+                                    <div id="sgi-responsavel" style="font-size: 1.05rem; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-user-tie" style="color: #64748b;"></i> <span>--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Procedimentos e Instruções -->
+                <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; border: 1px solid var(--border-color);">
+                    <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #f8fafc; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #334155; margin: 0;"><i class="fa-solid fa-file-lines" style="color: var(--status-inprogress);"></i> Procedimentos e Instruções</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="openModal('modal-upload-doc', 1)"><i class="fa-solid fa-plus"></i> Novo Documento</button>
+                            <button class="btn btn-secondary" onclick="openModal('modal-update-doc', 1)"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+                        </div>
+                    </div>
+                    <div style="padding: 0;">
+                        <table class="modern-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead style="background: #f1f5f9; border-bottom: 2px solid var(--border-color);">
+                                <tr>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Documento</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Sigla</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Versão</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Atualização</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Leitura</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Aprovação</th>
+                                    <th style="padding: 12px 20px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-procedimentos">
+                                <tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">Carregando documentos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Formulários -->
+                <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; border: 1px solid var(--border-color);">
+                    <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #f8fafc; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #334155; margin: 0;"><i class="fa-solid fa-file-pen" style="color: var(--status-intest);"></i> Formulários</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="openModal('modal-upload-doc', 2)"><i class="fa-solid fa-plus"></i> Novo Formulário</button>
+                            <button class="btn btn-secondary" onclick="openModal('modal-update-doc', 2)"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+                        </div>
+                    </div>
+                    <div style="padding: 0;">
+                        <table class="modern-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead style="background: #f1f5f9; border-bottom: 2px solid var(--border-color);">
+                                <tr>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Documento</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Sigla</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Versão</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Atualização</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Leitura</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Aprovação</th>
+                                    <th style="padding: 12px 20px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-formularios">
+                                <tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">Carregando formulários...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Participantes -->
+                <div class="card" style="background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 40px; border: 1px solid var(--border-color);">
+                    <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #f8fafc; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #334155; margin: 0;"><i class="fa-solid fa-users" style="color: var(--status-completed);"></i> Participantes da Área</h3>
+                        <button class="btn btn-primary" onclick="openModal('modal-participante')"><i class="fa-solid fa-user-plus"></i> Novo Participante</button>
+                    </div>
+                    <div style="padding: 0;">
+                        <table class="modern-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead style="background: #f1f5f9; border-bottom: 2px solid var(--border-color);">
+                                <tr>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Usuário</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Email</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted);">Perfil</th>
+                                    <th style="padding: 12px 20px; font-weight: 600; color: var(--text-muted); text-align: center;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-participantes">
+                                <tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">Carregando participantes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Modal: Novo Documento -->
+    <div id="modal-upload-doc" class="modal-overlay hidden">
+        <div class="modal-box" style="padding: 24px; width: 500px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 16px;">
+                <h3 id="modal-upload-title"><i class="fa-solid fa-file-arrow-up text-primary"></i> Anexar Novo Documento</h3>
+                <button onclick="closeModal('modal-upload-doc')" style="border:none;background:none;font-size:1.2rem;cursor:pointer;color:var(--text-muted);">&times;</button>
+            </div>
+            <form id="form-upload-doc" onsubmit="submitUploadDoc(event)">
+                <input type="hidden" id="upload-tipo" value="1">
+                <div style="margin-bottom: 16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Nome do Arquivo *</label>
+                    <input type="text" id="upload-nome" class="input-modern" style="width:100%" required>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Sigla do Arquivo *</label>
+                    <input type="text" id="upload-sigla" class="input-modern" style="width:100%" required>
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Selecione o arquivo *</label>
+                    <input type="file" id="upload-file" class="input-modern" style="width:100%; padding: 8px;" required>
+                </div>
+                
+                <div style="border-top:1px solid #e2e8f0; margin-top: 16px; padding-top: 16px; margin-bottom: 20px;">
+                    <div id="div-upload-aprovador">
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Aprovador Obrigatório *</label>
+                        <select class="input-modern" id="upload-aprovador" style="width:100%" required>
+                            <option value="">-- Selecione o Aprovador --</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 0.85rem; color: #b45309;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Importante!</strong> O nome do arquivo não pode ter caracteres especiais. O arquivo deve ter o nome igual ao da sigla.
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-upload-doc')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Anexar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Participante -->
+    <div id="modal-participante" class="modal-overlay hidden">
+        <div class="modal-box" style="padding: 24px; width: 600px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 16px;">
+                <h3 id="modal-upload-title"><i class="fa-solid fa-user-plus text-primary"></i> Inserir Novo Participante</h3>
+                <button onclick="closeModal('modal-participante')" style="border:none;background:none;font-size:1.2rem;cursor:pointer;color:var(--text-muted);">&times;</button>
+            </div>
+            
+            <table class="modern-table" style="width: 100%; margin-bottom: 20px;">
+                <thead style="background: #f8fafc;">
+                    <tr>
+                        <th style="padding: 8px 12px;"><input type="checkbox" id="checkAllUsers" onchange="toggleAllUsers(this)"></th>
+                        <th style="padding: 8px 12px;">Nome do Participante</th>
+                        <th style="padding: 8px 12px;">Nível de Acesso</th>
+                    </tr>
+                </thead>
+                <tbody id="users-selection-tbody">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+
+            <div style="text-align: right;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modal-participante')">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="addSelectedParticipants()"><i class="fa-solid fa-check"></i> Incluir Selecionados</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SGI MOCK DATA / LOGIC ---
+        // Em um cenário real, essas chamadas iriam para a API em C# (.NET Core)
+        
+        const API_BASE_URL = 'http://localhost:5246/api/ProcessoSgi';
+        const MOCK_PROCESSO_ID = 1; // Fixo para demonstração, na vida real seria obtido da URL (?id=1)
+        
+        let processoSgiData = {
+            id: 1,
+            nomeArea: 'Gestão de Compras - SGI',
+            responsavel: 'Carlos Silva',
+            aprovado: false, // Alterado para false para testar a trava de documentos
+            documentos: [
+                { id: 1, sigla: 'PROC-001', nome: 'Procedimento de Aquisição', versao: '03', atualizacao: '15/03/2026', aprovado: true, aprovador: 'Maria Souza', dataAprovacao: '16/03/2026 10:30', tipo: 1 },
+                { id: 2, sigla: 'INST-005', nome: 'Instrução de Recebimento', versao: '01', atualizacao: '20/03/2026', aprovado: false, aprovador: null, dataAprovacao: null, tipo: 1 }
+            ],
+            formularios: [
+                { id: 3, sigla: 'FORM-022', nome: 'Checklist de Qualidade', versao: '05', atualizacao: '01/02/2026', aprovado: true, aprovador: 'João Pereira', dataAprovacao: '05/02/2026 14:15', tipo: 2 }
+            ],
+            participantes: [
+                { id: 10, nome: 'Ana Duarte', email: 'ana.duarte@empresa.com.br', perfil: 'Participante' },
+                { id: 11, nome: 'Pedro Cardoso', email: 'pedro.c@empresa.com.br', perfil: 'Visualizador' }
+            ]
+        };
+
+        const MOCK_AVAILABLE_USERS = [
+            { id: 12, nome: 'Fernando Santos', email: 'fernando.s@empresa.com' },
+            { id: 13, nome: 'Patrícia Lima', email: 'patricia.l@empresa.com' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProcessoData();
+        });
+
+        async function loadProcessoData() {
+            try {
+                // Tenta chamar o C# backend
+                const response = await fetch(`${API_BASE_URL}/${MOCK_PROCESSO_ID}`);
+                if (response.ok) {
+                    processoSgiData = await response.json();
+                }
+            } catch (e) {
+                console.log("C# API não está rodando. Usando MOCK DATA para demonstração.");
+            }
+            renderUI();
+        }
+
+        function renderUI() {
+            document.getElementById('sgi-id').textContent = String(processoSgiData.id).padStart(4, '0');
+            document.getElementById('sgi-area').textContent = processoSgiData.nomeArea;
+            document.getElementById('sgi-responsavel').innerHTML = `<i class="fa-solid fa-user-tie" style="color: #64748b;"></i> <span>${processoSgiData.responsavel}</span>`;
+
+            const headerActions = document.getElementById('header-actions');
+            if (!processoSgiData.aprovado) {
+                headerActions.innerHTML = `<button class="btn btn-success" onclick="aprovarProcessoSGI()"><i class="fa-solid fa-stamp"></i> Aprovar Processo</button>`;
+            } else {
+                headerActions.innerHTML = `<span style="color:#16a34a; font-weight:600;"><i class="fa-solid fa-check-circle"></i> Processo Aprovado</span>`;
+            }
+
+            renderDocs(processoSgiData.documentos, 'tbody-procedimentos');
+            renderDocs(processoSgiData.formularios, 'tbody-formularios');
+            renderParticipants(processoSgiData.participantes);
+        }
+
+        function aprovarProcessoSGI() {
+            if(!confirm('Deseja aprovar este processo? Ele ficará liberado para anexar documentos.')) return;
+            // Em C#: HttpPut /api/ProcessoSgi/{id}/Aprovar
+            processoSgiData.aprovado = true;
+            renderUI();
+            alert('Processo aprovado com sucesso! Agora você pode anexar documentos.');
+        }
+
+        function renderDocs(docs, tbodyId) {
+            const tbody = document.getElementById(tbodyId);
+            if (docs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">Nenhum documento disponível até o momento.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = docs.map(d => {
+                let aprovacaoHtml = '';
+                if (d.aprovado) {
+                    aprovacaoHtml = `<div style="font-size: 0.85rem;"><strong style="color: #16a34a;"><i class="fa-solid fa-check"></i> Aprovado</strong><br><span style="color: var(--text-muted)">${d.aprovador}</span><br><span style="font-size: 0.75rem; color: #94a3b8;">${d.dataAprovacao}</span></div>`;
+                } else {
+                    aprovacaoHtml = `<button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="aprovarDocumento(${d.id})">Aprovar</button>`;
+                }
+
+                return `
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 12px 20px; font-weight: 500;">${d.nome}</td>
+                        <td style="padding: 12px 20px; text-align: center;"><a href="#" style="color: #3b82f6; text-decoration: none; font-weight: 600;">${d.sigla}</a></td>
+                        <td style="padding: 12px 20px; text-align: center;"><span style="background: #e2e8f0; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">${d.versao}</span></td>
+                        <td style="padding: 12px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">${d.atualizacao}</td>
+                        <td style="padding: 12px 20px; text-align: center;"><a href="#" style="color: var(--text-muted);"><i class="fa-solid fa-eye"></i></a></td>
+                        <td style="padding: 12px 20px;">${aprovacaoHtml}</td>
+                        <td style="padding: 12px 20px; text-align: right;"><button class="btn" style="color: #ef4444; background: transparent; padding: 6px;" onclick="deletarDocumento(${d.id})"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderParticipants(parts) {
+            const tbody = document.getElementById('tbody-participantes');
+            if (parts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 30px; color: var(--text-muted);">Nenhum participante inserido.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = parts.map(p => `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 12px 20px; font-weight: 500;"><div style="display: flex; align-items: center; gap: 10px;"><div style="width: 30px; height: 30px; border-radius: 50%; background: #e2e8f0; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:bold; color: #475569;">${p.nome.charAt(0)}</div> ${p.nome}</div></td>
+                    <td style="padding: 12px 20px; color: var(--text-muted); font-size: 0.9rem;">${p.email}</td>
+                    <td style="padding: 12px 20px;"><span style="background: ${p.perfil === 'Participante' ? '#dbeafe' : '#f1f5f9'}; color: ${p.perfil === 'Participante' ? '#1d4ed8' : '#475569'}; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">${p.perfil}</span></td>
+                    <td style="padding: 12px 20px; text-align: center;"><button class="btn" style="color: #ef4444; background: transparent; padding: 6px;" onclick="deletarParticipante(${p.id})"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        // --- Interactivity ---
+        function openModal(modalId, tipoDoc = null) {
+            if (modalId === 'modal-upload-doc' && tipoDoc) {
+                if (!processoSgiData.aprovado) {
+                    alert('Este processo ainda não foi aprovado pelo responsável. Você não pode anexar documentos até a sua aprovação.');
+                    return;
+                }
+                document.getElementById('upload-tipo').value = tipoDoc;
+                document.getElementById('modal-upload-title').innerHTML = `<i class="fa-solid fa-file-arrow-up text-primary"></i> Anexar ${tipoDoc === 1 ? 'Procedimento' : 'Formulário'}`;
+                
+                const selectAprovador = document.getElementById('upload-aprovador');
+                selectAprovador.innerHTML = '<option value="">-- Selecione o Aprovador --</option>' + 
+                    MOCK_AVAILABLE_USERS.map(u => `<option value="${u.nome}">${u.nome}</option>`).join('');
+            }
+            if (modalId === 'modal-participante') {
+                renderAvailableUsers();
+            }
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function renderAvailableUsers() {
+            const tbody = document.getElementById('users-selection-tbody');
+            tbody.innerHTML = MOCK_AVAILABLE_USERS.map(u => `
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 8px 12px;"><input type="checkbox" class="chk-user" value="${u.id}"></td>
+                    <td style="padding: 8px 12px;"><div style="font-weight: 500;">${u.nome}</div><div style="font-size: 0.8rem; color: var(--text-muted);">${u.email}</div></td>
+                    <td style="padding: 8px 12px;">
+                        <select class="input-modern sel-perfil" style="padding: 4px; font-size: 0.85rem;" data-uid="${u.id}">
+                            <option value="Visualizador">Visualizador</option>
+                            <option value="Participante">Participante</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleAllUsers(checkbox) {
+            document.querySelectorAll('.chk-user').forEach(cb => cb.checked = checkbox.checked);
+        }
+
+        // C# API Calls Simulation
+        async function submitUploadDoc(e) {
+            e.preventDefault();
+            const tipo = parseInt(document.getElementById('upload-tipo').value);
+            const nome = document.getElementById('upload-nome').value;
+            const sigla = document.getElementById('upload-sigla').value;
+            
+            const aprovador = document.getElementById('upload-aprovador').value;
+
+            if (!aprovador) {
+                alert('Selecione o aprovador obrigatório.');
+                return;
+            }
+
+            // Em C#: HttpPost /api/ProcessoSgi/{id}/Documentos
+            const novoItem = {
+                id: Date.now(), sigla, nome, versao: '01', atualizacao: new Date().toLocaleDateString('pt-BR'), 
+                aprovado: false, // Aprovação é obrigatória, então nasce recusado!
+                aprovador: null, 
+                dataAprovacao: null, 
+                tipo
+            };
+
+            if (tipo === 1) processoSgiData.documentos.push(novoItem);
+            else processoSgiData.formularios.push(novoItem);
+
+            renderUI();
+            closeModal('modal-upload-doc');
+            e.target.reset();
+            alert('Documento anexado com sucesso e enviado para aprovação! (Simulação)');
+        }
+
+        function aprovarDocumento(docId) {
+            // Em C#: HttpPut /api/ProcessoSgi/Documentos/{docId}/Aprovar
+            const doc = [...processoSgiData.documentos, ...processoSgiData.formularios].find(d => d.id === docId);
+            if (doc) {
+                doc.aprovado = true;
+                doc.aprovador = 'Ana Duarte (Você)';
+                doc.dataAprovacao = new Date().toLocaleString('pt-BR');
+                renderUI();
+                alert('Documento aprovado! (Simulação)');
+            }
+        }
+
+        function deletarDocumento(docId) {
+            if (confirm("Tem certeza que vai deletar o registro ?")) {
+                // Em C#: HttpDelete /api/ProcessoSgi/Documentos/{docId}
+                processoSgiData.documentos = processoSgiData.documentos.filter(d => d.id !== docId);
+                processoSgiData.formularios = processoSgiData.formularios.filter(d => d.id !== docId);
+                renderUI();
+            }
+        }
+
+        function deletarParticipante(partId) {
+            if (confirm("Tem certeza que vai remover o participante ?")) {
+                // Em C#: HttpDelete /api/ProcessoSgi/{id}/Participantes/{partId}
+                processoSgiData.participantes = processoSgiData.participantes.filter(p => p.id !== partId);
+                renderUI();
+            }
+        }
+
+        function addSelectedParticipants() {
+            const checks = document.querySelectorAll('.chk-user:checked');
+            if (checks.length === 0) return;
+
+            checks.forEach(chk => {
+                const uid = parseInt(chk.value);
+                const user = MOCK_AVAILABLE_USERS.find(user => user.id === uid);
+                const selectPerfil = document.querySelector(`.sel-perfil[data-uid="${uid}"]`);
+                const perfil = selectPerfil.value;
+
+                if (user && !processoSgiData.participantes.some(p => p.id === uid)) {
+                    processoSgiData.participantes.push({ ...user, perfil });
+                }
+            });
+
+            renderUI();
+            closeModal('modal-participante');
+            alert('Participantes inseridos com sucesso! (Simulação)');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhe do Chamado | BrSupply Help Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .detail-header-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background: #f8fafc;
+            color: var(--text-main);
+        }
+
+        .ticket-id-badge {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text-main);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ticket-id-badge span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 24px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .info-item .info-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .info-item .info-value.description {
+            font-weight: 400;
+            line-height: 1.6;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .sla-bar-wrap {
+            padding: 0 24px 16px;
+        }
+
+        .sla-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .sla-bar-track {
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .sla-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        .timeline {
+            padding: 0 24px 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 14px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 32px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
+        .timeline-body {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .timeline-body .tl-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .timeline-body .tl-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .action-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 16px 24px;
+        }
+
+        .action-btns .btn {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: white;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #fef2f2;
+        }
+
+        .atraso-banner {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #b91c1c;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .not-found i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+
+        .not-found h2 {
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* Ação Modal */
+        .acao-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .acao-modal.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .acao-modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            width: 90%;
+            max-width: 560px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            animation: modalScale 0.25s ease;
+        }
+
+        @keyframes modalScale {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Ticket Header in Modal */
+        .modal-ticket-info {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .mti-id {
+            text-align: center;
+            border-right: 1px solid var(--border-color);
+            padding-right: 16px;
+        }
+
+        .mti-id div {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .mti-id strong {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+
+        .mti-details {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        .mti-details label {
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .mti-details span {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Transfer Modal specific */
+        .destinatario-btns {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .dest-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .dest-btn.active {
+            background: #e0f2fe;
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+        }
+
+        .dest-btn:hover:not(.active) {
+            background: #f8fafc;
+        }
+
+        @media (max-width: 800px) {
+            .detail-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="top-bar">
+            <a href="index.html" class="logo">
+                <div class="logo-main"><span class="br">Br</span><span class="supply">SUPPLY</span></div>
+                <div class="logo-sub">Suprimentos Corporativos</div>
+            </a>
+            <div class="top-bar-divider"></div>
+            <div class="page-title-bar">
+                <i class="fa-solid fa-ticket"></i> Detalhe do Chamado
+            </div>
+            <div class="top-bar-actions">
+                <div class="user-profile-circle">AD</div>
+            </div>
+        </header>
+
+        <nav class="nav-bar">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="listachamados.html" class="nav-item"><i class="fa-solid fa-ticket"></i> Meus Chamados</a>
+                <a href="listachamadosatendimento.html" class="nav-item"><i class="fa-solid fa-microchip"></i> Painel de
+                    Atendimento</a>
+                <a href="arquivos.html" class="nav-item"><i class="fa-solid fa-folder-open"></i> Arquivos</a>
+                <a href="#" class="nav-item" onclick="openTicketModal('EmNome')"><i class="fa-solid fa-user-pen"></i>
+                    Abrir em Nome</a>
+                <a href="listatodoschamados.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i>
+                    Relatórios</a>
+            </div>
+        </nav>
+
+        <div class="content-area">
+            <div id="chamado-content"></div>
+        </div>
+
+        <!-- Ticket Modal -->
+        <div id="ticket-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-plus-circle"></i> Abrir Novo Chamado</h3>
+                    <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="ticket-form" onsubmit="handleTicketSubmit(event)">
+                        <div id="modal-on-behalf-section" class="hidden">
+                            <div class="on-behalf-panel">
+                                <p><i class="fa-solid fa-user-pen"></i> Abrindo em nome de outro usuário.</p>
+                                <label class="modal-label">Usuário *</label>
+                                <select class="modal-select" id="modal-usuario-abertura">
+                                    <option value="">-- Selecione --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Área Demandada *</label>
+                            <select class="modal-select" id="modal-area" onchange="onModalAreaChange()">
+                                <option value="">-- Selecione a Área --</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Nível de Atendimento *</label>
+                            <select class="modal-select" id="modal-nivel" onchange="onModalNivelChange()" disabled>
+                                <option value="">Selecione uma Área primeiro</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Tipo de Ocorrência *</label>
+                            <select class="modal-select" id="modal-problema" disabled>
+                                <option value="">Selecione um Nível primeiro</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Descrição *</label>
+                            <textarea class="modal-textarea" id="modal-descricao"
+                                placeholder="Descreva o problema de forma clara..."></textarea>
+                        </div>
+                        <div
+                            style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="closeTicketModal()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Gravar Chamado</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Registrar Ação -->
+        <div id="acao-modal" class="acao-modal">
+            <div class="acao-modal-content">
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:16px;"><i class="fa-solid fa-pen-to-square"
+                        style="color:var(--primary-color);"></i> Registrar Ação</h3>
+                <label class="modal-label">Descrição da Ação *</label>
+                <textarea id="acao-descricao" class="modal-textarea"
+                    placeholder="Descreva a ação realizada..."></textarea>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;">
+                    <button class="btn btn-secondary" onclick="closeAcaoModal()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="salvarAcao()"><i class="fa-solid fa-check"></i>
+                        Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Reclassificar -->
+        <div id="reclassificar-modal" class="acao-modal">
+            <div class="acao-modal-content">
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px;text-align:center;">Reclassificar Chamado
+                </h3>
+
+                <div class="modal-ticket-info">
+                    <div class="mti-id">
+                        <div>Número do chamado</div>
+                        <strong id="rc-ticket-id">00000</strong>
+                    </div>
+                    <div class="mti-details">
+                        <label>Problema</label> <span id="rc-ticket-problema">...</span>
+                        <label>Solicitante</label> <span id="rc-ticket-solicitante">...</span>
+                    </div>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="modal-label">Área *</label>
+                    <select id="rc-area" class="modal-select" onchange="onRcAreaChange()"></select>
+                </div>
+                <div class="form-group-modal">
+                    <label class="modal-label">Nível de Atendimento *</label>
+                    <select id="rc-nivel" class="modal-select" onchange="onRcNivelChange()" disabled></select>
+                </div>
+                <div class="form-group-modal">
+                    <label class="modal-label">Tipo de Ocorrência *</label>
+                    <select id="rc-problema" class="modal-select" disabled></select>
+                </div>
+                <div class="form-group-modal">
+                    <label class="modal-label">Motivo da Reclassificação *</label>
+                    <textarea id="rc-motivo" class="modal-textarea"
+                        placeholder="Descreva o motivo da mudança..."></textarea>
+                </div>
+
+                <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+                    <button class="btn btn-primary" onclick="salvarReclassificacao()"
+                        style="width:120px;">Gravar</button>
+                    <button class="btn btn-secondary" onclick="closeReclassificarModal()"
+                        style="width:120px;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Transferir -->
+        <div id="transferir-modal" class="acao-modal">
+            <div class="acao-modal-content">
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:20px;text-align:center;">Transferir para Outro
+                    Atendente</h3>
+
+                <div class="modal-ticket-info">
+                    <div class="mti-id">
+                        <div>Número do chamado</div>
+                        <strong id="tr-ticket-id">00000</strong>
+                    </div>
+                    <div class="mti-details">
+                        <label>Problema</label> <span id="tr-ticket-problema">...</span>
+                        <label>Solicitante</label> <span id="tr-ticket-solicitante">...</span>
+                    </div>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="modal-label">Atendente Atual</label>
+                    <input type="text" id="tr-atual" class="modal-select" style="background:#f1f5f9;" readonly>
+                </div>
+
+                <label class="modal-label">Destinatário</label>
+                <div class="destinatario-btns">
+                    <button class="dest-btn active" onclick="setTransferDest('atendente', this)">Outro
+                        Atendente</button>
+                    <button class="dest-btn" onclick="setTransferDest('fornecedor', this)">Para Fornecedor</button>
+                    <button class="dest-btn" onclick="setTransferDest('cliente', this)">Para Cliente</button>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="modal-label">Transferir Para *</label>
+                    <select id="tr-destinatario" class="modal-select"></select>
+                </div>
+
+                <div class="form-group-modal">
+                    <label class="modal-label">Motivo da Transferência *</label>
+                    <textarea id="tr-motivo" class="modal-textarea"
+                        placeholder="Descreva o motivo da transferência..."></textarea>
+                </div>
+
+                <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+                    <button class="btn btn-primary" onclick="salvarTransferencia()" style="width:120px;">Gravar</button>
+                    <button class="btn btn-secondary" onclick="closeTransferirModal()"
+                        style="width:120px;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let _chamadoId = null;
+        let _voltarHref = 'listachamados.html';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            _chamadoId = parseInt(params.get('id'));
+            const orig = params.get('Orig') || '';
+
+            const origMap = {
+                'ListaTodos': 'listatodoschamados.html',
+                'Atende': 'listachamadosatendimento.html',
+                'MeusChamados': 'listachamados.html',
+            };
+            _voltarHref = origMap[orig] || 'listachamados.html';
+
+            renderDetalhe();
+
+            if (document.getElementById('modal-area')) {
+                populateModalAreas();
+                populateModalUsers();
+            }
+        });
+
+        function renderDetalhe() {
+            const ticket = DB.getChamado(_chamadoId);
+            const container = document.getElementById('chamado-content');
+
+            if (!ticket) {
+                container.innerHTML = `
+                <div class="not-found">
+                    <i class="fa-solid fa-ticket-simple"></i>
+                    <h2>Chamado não encontrado</h2>
+                    <p style="color:var(--text-muted);margin:12px 0 24px;">O chamado #${_chamadoId || '?'} não existe ou foi removido.</p>
+                    <a href="${_voltarHref}" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Voltar à lista</a>
+                </div>`;
+                return;
+            }
+
+            document.title = `Chamado #${ticket.id} | BrSupply Help Desk`;
+
+            const mainColor = ticket.atrasado ? '#ef4444' : ticket.cor;
+            const corClara = ticket.atrasado ? '#fef2f2' : ticket.corClara;
+
+            const elapsed = (new Date() - new Date(ticket.dataAbertura)) / 3600000;
+            const slaTotal = ticket.slaHoras || 8;
+            const slaPercent = Math.min(100, Math.round((elapsed / slaTotal) * 100));
+            const slaColor = slaPercent >= 100 ? '#ef4444' : slaPercent >= 70 ? '#f59e0b' : '#10b981';
+
+            const dtAbertura = new Date(ticket.dataAbertura).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const dtPrevisao = ticket.previsao ? new Date(ticket.previsao).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+
+            const isEncerrado = ['EN', 'CA'].includes(ticket.status);
+            const atrasoBanner = ticket.atrasado ? `<div class="atraso-banner"><i class="fa-solid fa-triangle-exclamation"></i> Este chamado está com o SLA ATRASADO</div>` : '';
+
+            const historico = (ticket.historico || []).map(h => {
+                const dt = new Date(h.data).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `
+            <div class="timeline-item">
+                <div class="timeline-dot" style="background:#f0f9ff;color:#3b82f6;"><i class="fa-solid fa-comment-dots"></i></div>
+                <div class="timeline-body">
+                    <div class="tl-title">${h.acao}</div>
+                    <div class="tl-sub">${dt} — ${h.usuario}</div>
+                </div>
+            </div>`;
+            }).join('');
+
+            const initials = (ticket.responsavelNome || 'NN').split(' ').map(n => n[0]).slice(0, 2).join('');
+
+            container.innerHTML = `
+            <div class="detail-header-bar">
+                <a href="${_voltarHref}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+                <div class="ticket-id-badge">
+                    Chamado #${ticket.id}
+                    <span>${ticket.problemaNome}</span>
+                </div>
+                <span class="status-pill" style="background:${corClara};border:1.5px solid ${mainColor};color:${mainColor};font-size:0.85rem;padding:6px 20px;white-space:nowrap;">
+                    ${ticket.statusDesc}${ticket.atrasado ? ' &nbsp;<i class="fa-solid fa-clock"></i>' : ''}
+                </span>
+            </div>
+
+            ${atrasoBanner}
+
+            <div class="detail-layout">
+                <div>
+                    <div class="card" style="margin-bottom:24px;">
+                        <div class="card-header" style="background:${corClara};border-left:5px solid ${mainColor};">
+                            <h3 style="color:${mainColor};"><i class="fa-solid fa-circle-info"></i> Informações do Chamado</h3>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-building"></i> Área</label>
+                                <div class="info-value">${ticket.areaNome}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-layer-group"></i> Nível de Atendimento</label>
+                                <div class="info-value">${ticket.nivelNome}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-tag"></i> Tipo de Ocorrência</label>
+                                <div class="info-value">${ticket.problemaNome}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-user-gear"></i> Responsável</label>
+                                <div class="info-value">${ticket.responsavelNome}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-user"></i> Solicitante</label>
+                                <div class="info-value">${ticket.solicitanteNome}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-calendar-plus"></i> Data de Abertura</label>
+                                <div class="info-value">${dtAbertura}</div>
+                            </div>
+                            <div class="info-item">
+                                <label><i class="fa-solid fa-calendar-check"></i> Previsão de Atendimento</label>
+                                <div class="info-value">${dtPrevisao}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <label><i class="fa-solid fa-align-left"></i> Descrição do Problema</label>
+                                <div class="info-value description">${ticket.descricao || ticket.problemaNome}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Ações</h3>
+                        </div>
+                        <div class="timeline" style="padding-top:20px;">
+                            ${historico || '<p style="color:var(--text-muted);font-size:0.85rem;padding:0 24px 20px;">Nenhuma ação registrada.</p>'}
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-header"><h3><i class="fa-solid fa-gauge"></i> Status & SLA</h3></div>
+                        <div style="padding:20px 24px;text-align:center;">
+                            <div class="status-pill" style="background:${corClara};border:2px solid ${mainColor};color:${mainColor};font-size:1rem;font-weight:800;padding:8px 24px;">
+                                ${ticket.statusDesc}
+                            </div>
+                        </div>
+                        <div class="sla-bar-wrap">
+                            <div class="sla-bar-label">
+                                <span>Uso de SLA (${ticket.slaHoras}h)</span>
+                                <span style="color:${slaColor};font-weight:800;">${slaPercent}%</span>
+                            </div>
+                            <div class="sla-bar-track">
+                                <div class="sla-bar-fill" style="width:${slaPercent}%;background:${slaColor};"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-header"><h3><i class="fa-solid fa-user-gear"></i> Responsável</h3></div>
+                        <div style="padding:16px 24px;display:flex;align-items:center;gap:14px;">
+                            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary-color),var(--primary-hover));color:white;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">
+                                ${initials}
+                            </div>
+                            <div>
+                                <div style="font-weight:700;font-size:0.95rem;">${ticket.responsavelNome}</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">${ticket.nivelNome}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h3><i class="fa-solid fa-bolt"></i> Ações</h3></div>
+                        <div class="action-btns">
+                            ${!isEncerrado ? `
+                            <button class="btn btn-primary" onclick="openAcaoModal()"><i class="fa-solid fa-pen-to-square"></i> Registrar Ação</button>
+                            <button class="btn btn-secondary" onclick="openReclassificarModal()"><i class="fa-solid fa-arrows-rotate"></i> Reclassificar Chamado</button>
+                            <button class="btn btn-secondary" onclick="openTransferirModal()"><i class="fa-solid fa-share-from-square"></i> Transferir Atendente</button>
+                            <button class="btn btn-success" onclick="encerrarChamado()"><i class="fa-solid fa-circle-check"></i> Encerrar Chamado</button>
+                            <button class="btn btn-danger" onclick="cancelarChamado()"><i class="fa-solid fa-ban"></i> Cancelar Chamado</button>
+                            ` : `
+                            <div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:8px 0;">
+                                <i class="fa-solid fa-lock" style="margin-bottom:6px;display:block;font-size:1.2rem;"></i>
+                                Chamado ${ticket.statusDesc} — sem ações disponíveis.
+                            </div>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        }
+
+        // ── Ações ──────────────────────────────────────────────────
+
+        function openAcaoModal() {
+            document.getElementById('acao-descricao').value = '';
+            document.getElementById('acao-modal').classList.add('open');
+        }
+
+        function closeAcaoModal() {
+            document.getElementById('acao-modal').classList.remove('open');
+        }
+
+        function salvarAcao() {
+            const desc = document.getElementById('acao-descricao').value.trim();
+            if (!desc) { alert('Descreva a ação antes de salvar.'); return; }
+            DB.addHistorico(_chamadoId, 'Ana Duarte', desc);
+            DB.updateChamadoStatus(_chamadoId, 'EM');
+            closeAcaoModal();
+            showToast('Ação registrada com sucesso!', 'success');
+            renderDetalhe();
+        }
+
+        function encerrarChamado() {
+            if (!confirm('Deseja encerrar este chamado?')) return;
+            DB.addHistorico(_chamadoId, 'Ana Duarte', 'Chamado encerrado.');
+            DB.updateChamadoStatus(_chamadoId, 'EN');
+            showToast('Chamado encerrado!', 'success');
+            renderDetalhe();
+        }
+
+        function cancelarChamado() {
+            if (!confirm('Deseja cancelar este chamado?')) return;
+            DB.addHistorico(_chamadoId, 'Ana Duarte', 'Chamado cancelado.');
+            DB.updateChamadoStatus(_chamadoId, 'CA');
+            showToast('Chamado cancelado.', 'info');
+            renderDetalhe();
+        }
+
+        // Close modals on outside click
+        window.onclick = function (e) {
+            if (e.target.classList.contains('acao-modal')) {
+                e.target.classList.remove('open');
+            }
+        };
+
+        // ── Reclassificar ──────────────────────────────────────────
+
+        function openReclassificarModal() {
+            const ticket = DB.getChamado(_chamadoId);
+            if (!ticket) return;
+
+            document.getElementById('rc-ticket-id').textContent = ticket.id;
+            document.getElementById('rc-ticket-problema').textContent = ticket.problemaNome;
+            document.getElementById('rc-ticket-solicitante').textContent = ticket.solicitanteNome;
+            document.getElementById('rc-motivo').value = '';
+
+            const areaSel = document.getElementById('rc-area');
+            areaSel.innerHTML = '<option value="">-- Selecione a Área --</option>';
+            DB.areas.forEach(a => {
+                const opt = new Option(a.nome, a.id);
+                if (a.id === ticket.areaId) opt.selected = true;
+                areaSel.add(opt);
+            });
+
+            document.getElementById('reclassificar-modal').classList.add('open');
+            onRcAreaChange(); // Trigger cascade to populate Level/Problem based on current area
+        }
+
+        function closeReclassificarModal() {
+            document.getElementById('reclassificar-modal').classList.remove('open');
+        }
+
+        function onRcAreaChange() {
+            const areaId = document.getElementById('rc-area').value;
+            const nivelSel = document.getElementById('rc-nivel');
+            const probSel = document.getElementById('rc-problema');
+
+            nivelSel.innerHTML = '<option value="">-- Selecione o Nível --</option>';
+            probSel.innerHTML = '<option value="">Selecione um Nível primeiro</option>';
+            probSel.disabled = true;
+
+            if (areaId) {
+                DB.niveisPorArea(areaId).forEach(n => {
+                    nivelSel.add(new Option(n.nome, n.id));
+                });
+                nivelSel.disabled = false;
+            } else {
+                nivelSel.disabled = true;
+            }
+        }
+
+        function onRcNivelChange() {
+            const nivelId = document.getElementById('rc-nivel').value;
+            const probSel = document.getElementById('rc-problema');
+
+            probSel.innerHTML = '<option value="">-- Selecione a Ocorrência --</option>';
+            if (nivelId) {
+                DB.problemasPorNivel(nivelId).forEach(p => {
+                    probSel.add(new Option(p.nome, p.id));
+                });
+                probSel.disabled = false;
+            } else {
+                probSel.disabled = true;
+            }
+        }
+
+        function salvarReclassificacao() {
+            const areaId = document.getElementById('rc-area').value;
+            const nivelId = document.getElementById('rc-nivel').value;
+            const probId = document.getElementById('rc-problema').value;
+            const motivo = document.getElementById('rc-motivo').value.trim();
+
+            if (!areaId || !nivelId || !probId || !motivo) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            DB.reclassificarChamado(_chamadoId, {
+                areaId, nivelId, problemaId: probId, motivo, usuarioNome: 'Ana Duarte'
+            });
+
+            closeReclassificarModal();
+            showToast('Chamado reclassificado com sucesso!', 'success');
+            renderDetalhe();
+        }
+
+        // ── Transferir ─────────────────────────────────────────────
+
+        function openTransferirModal() {
+            const ticket = DB.getChamado(_chamadoId);
+            if (!ticket) return;
+
+            document.getElementById('tr-ticket-id').textContent = ticket.id;
+            document.getElementById('tr-ticket-problema').textContent = ticket.problemaNome;
+            document.getElementById('tr-ticket-solicitante').textContent = ticket.solicitanteNome;
+            document.getElementById('tr-atual').value = ticket.responsavelNome;
+            document.getElementById('tr-motivo').value = '';
+
+            setTransferDest('atendente', document.querySelector('.dest-btn.active'));
+            document.getElementById('transferir-modal').classList.add('open');
+        }
+
+        function closeTransferirModal() {
+            document.getElementById('transferir-modal').classList.remove('open');
+        }
+
+        function setTransferDest(type, btn) {
+            // Toggle active class
+            document.querySelectorAll('.dest-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const destSel = document.getElementById('tr-destinatario');
+            destSel.innerHTML = '<option value="">-- Selecione uma opção --</option>';
+
+            if (type === 'atendente') {
+                // Mostra atendentes da mesma área (ou todos para simplificar o mock)
+                DB.usuarios.filter(u => ['ADMIN', 'ATENDENTE'].includes(u.perfil)).forEach(u => {
+                    destSel.add(new Option(u.nome, u.id));
+                });
+            } else if (type === 'fornecedor') {
+                ['Dell Suporte', 'Telefônica/Vivo', 'Branco Consultoria'].forEach((f, i) => {
+                    destSel.add(new Option(f, 900 + i));
+                });
+            } else {
+                destSel.add(new Option(document.getElementById('tr-ticket-solicitante').textContent, 1));
+            }
+        }
+
+        function salvarTransferencia() {
+            const destId = document.getElementById('tr-destinatario').value;
+            const motivo = document.getElementById('tr-motivo').value.trim();
+
+            if (!destId || !motivo) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            DB.transferirChamado(_chamadoId, destId, motivo, 'Ana Duarte');
+            closeTransferirModal();
+            showToast('Chamado transferido com sucesso!', 'success');
+            renderDetalhe();
+        }
+    </script>
+</body>
+
+</html>

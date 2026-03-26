@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Atendimento | BrSupply Help Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <a href="index.html" class="logo">
+            <div class="logo-main"><span class="br">Br</span><span class="supply">SUPPLY</span></div>
+        </a>
+        <div class="top-bar-divider"></div>
+        <div class="page-title-bar">
+            <i class="fa-solid fa-headset"></i>
+            Painel de Atendimento
+        </div>
+        <div class="top-bar-actions">
+            <div class="user-profile-circle">AD</div>
+        </div>
+    </header>
+
+    <!-- Global Navigation Menu -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+            <a href="listachamados.html" class="nav-item"><i class="fa-solid fa-ticket"></i> Meus Chamados</a>
+            <a href="listachamadosatendimento.html" class="nav-item active"><i class="fa-solid fa-microchip"></i> Painel de Atendimento</a>
+            <a href="arquivos.html" class="nav-item"><i class="fa-solid fa-folder-open"></i> Arquivos</a>
+            <a href="#" class="nav-item" onclick="openTicketModal('EmNome')"><i class="fa-solid fa-user-pen"></i> Abrir em Nome</a>
+            <a href="listatodoschamados.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i> Relatórios</a>
+
+        </div>
+    </nav>
+    <div class="content-area">
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-magnifying-glass"></i> Painel de Atendimento (Gestão)</h3>
+            </div>
+            
+            <div class="filter-buttons" style="padding: 16px 24px; background: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <button class="filter-btn status-filter active" data-filter="PD">Pendentes</button>
+                <button class="filter-btn status-filter" data-filter="NO">Novos <span id="count-no" style="font-size: 0.7rem; opacity: 0.8; margin-left: 4px;">(0)</span></button>
+                <button class="filter-btn status-filter" data-filter="EM">Em Atendimento <span id="count-em" style="font-size: 0.7rem; opacity: 0.8; margin-left: 4px;">(0)</span></button>
+                <button class="filter-btn status-filter" data-filter="AR">Agd. Retorno <span id="count-ar" style="font-size: 0.7rem; opacity: 0.8; margin-left: 4px;">(0)</span></button>
+                <button class="filter-btn status-filter" data-filter="AT" style="border-color: #ef4444; color: #ef4444;">Atrasados <span id="count-at" style="font-size: 0.7rem; margin-left: 4px;">(0)</span></button>
+                <button class="filter-btn status-filter" data-filter="RS">Sua Responsabilidade</button>
+            </div>
+
+            <div class="table-filter-bar">
+                <div class="table-search-box">
+                    <label>Procurar:</label>
+                    <input type="text" id="atendimento-search" placeholder="Filtrar por código, área ou descrição..." class="input-modern" style="flex:1; max-width: 400px;">
+                </div>
+
+                <div class="pagination-controls">
+                    <button class="btn-pg">Primeira</button>
+                    <button class="btn-pg">Anterior</button>
+                    <button class="btn-pg">Seguinte</button>
+                    <button class="btn-pg">Última</button>
+                    <span>Página <input type="text" value="1" class="pg-input"> de 1</span>
+                </div>
+            </div>
+
+            <div class="card-body" style="padding: 0;">
+                <div class="table-container">
+                    <table class="modern-table" id="atendimento-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px; text-align: center;">CÓD..</th>
+                                <th style="width: 10px;"></th>
+                                <th>ÁREA / NÍVEL</th>
+                                <th>PROBLEMA</th>
+                                <th>SOLICITANTE / RESPONSÁVEL</th>
+                                <th style="text-align: center;">PREVISÃO</th>
+                                <th style="width: 60px; text-align: center;"><i class="fa-solid fa-paperclip"></i></th>
+                                <th style="text-align: center;">SITUAÇÃO</th>
+                                <th style="width: 60px; text-align: center;">VER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="atendimento-list-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Creation Modal -->
+        <div id="ticket-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-plus-circle"></i> Abrir Novo Chamado</h3>
+                    <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <!-- Notice Panel -->
+                    <div class="notice-panel" style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+                        <p style="color: #b45309; font-weight: 800; font-size: 0.85rem; margin-bottom: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> IMPORTANTE!</p>
+                        <p style="color: #d97706; font-size: 0.8rem; margin: 0;">Descreva o problema de forma clara para agilizar o atendimento.</p>
+                    </div>
+
+                    <form id="ticket-form" onsubmit="handleTicketSubmit(event)">
+                        <!-- On Behalf Section (Conditional) -->
+                        <div id="modal-on-behalf-section" class="hidden">
+                            <div class="on-behalf-panel">
+                                <p><i class="fa-solid fa-user-pen"></i> Você está abrindo este chamado em nome de outro usuário. Selecione-o na lista:</p>
+                                <label class="modal-label">Usuário *</label>
+                                <select class="modal-select" id="modal-usuario-abertura">
+                                    <option value="">-- Selecione o Usuário --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group-modal">
+                            <label class="modal-label">Área Demandada *</label>
+                            <select class="modal-select" id="modal-area" onchange="onModalAreaChange()">
+                                <option value="">-- Selecione a Área --</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Nível de Atendimento *</label>
+                            <select class="modal-select" id="modal-nivel" onchange="onModalNivelChange()" disabled>
+                                <option value="">Selecione uma Área primeiro</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Tipo de Ocorrência / Problema *</label>
+                            <select class="modal-select" id="modal-problema" disabled>
+                                <option value="">Selecione um Nível primeiro</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal">
+                            <label class="modal-label">Descrição Resumida do Problema *</label>
+                            <textarea class="modal-textarea" id="modal-descricao" placeholder="Descreva o problema de forma clara..."></textarea>
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary" onclick="closeTicketModal()" style="border-radius: 8px; padding: 10px 24px;">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: white; border: none; font-weight: 700; border-radius: 8px; padding: 10px 24px; box-shadow: 0 4px 6px -1px rgba(247, 143, 30, 0.2);">Gravar Chamado</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Setup initial counts
+        updateAtendimentoCounts();
+
+        // Setup filters
+        const filterBtns = document.querySelectorAll('.status-filter');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderAtendimentoList(btn.dataset.filter);
+            });
+        });
+
+        // Search logic
+        document.getElementById('atendimento-search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const activeBtn = document.querySelector('.status-filter.active');
+            const activeFilter = activeBtn ? activeBtn.dataset.filter : 'PD';
+            renderAtendimentoList(activeFilter, term);
+        });
+
+        // If no URL param, render default
+        if (!new URLSearchParams(window.location.search).has('opcao')) {
+            renderAtendimentoList('PD');
+        }
+    });
+</script>
+</body>
+</html>

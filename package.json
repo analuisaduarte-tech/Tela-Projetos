@@ -1,0 +1,9 @@
+{
+  "name": "sgi-process-manager",
+  "version": "1.0.0",
+  "description": "Static frontend for SGI Process Manager",
+  "scripts": {
+    "start": "npx serve -l 3000 ."
+  },
+  "dependencies": {}
+}

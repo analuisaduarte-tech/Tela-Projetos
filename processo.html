@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGI – Detalhes do Processo | BrSupply</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <a href="index.html" class="logo">
+            <div class="logo-main"><span class="br">Br</span><span class="supply">SUPPLY</span></div>
+            <div class="logo-sub">Suprimentos Corporativos</div>
+        </a>
+        <div class="top-bar-divider"></div>
+        <div class="page-title-bar">
+            <i class="fa-solid fa-diagram-project"></i>
+            SGI – Acompanhamento do Processo
+        </div>
+        <div class="top-bar-actions">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f78f1e,#e07b13);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.85rem;">AD</div>
+        </div>
+    </header>
+
+    <div class="content-area">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fa-solid fa-house"></i> SGI</a>
+            <span class="sep"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
+            <span id="breadcrumb-name">Processo</span>
+        </div>
+
+        <!-- Process Header Card -->
+        <div class="card" style="margin-top:12px;">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-circle-info"></i> Detalhes do Processo</h3>
+                <div style="display:flex;gap:8px;" id="header-actions">
+                    <!-- Actions injected by JS based on permissions -->
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="info-panel" id="process-info-panel">
+                    <div style="display:flex;align-items:center;justify-content:center;padding:20px;">
+                        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem;color:var(--primary-color);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="section-tabs">
+            <button class="tab-btn active" onclick="switchTab('docs')" id="tab-btn-docs">
+                <i class="fa-solid fa-file-lines"></i> Procedimentos e Instruções
+                <span id="tab-docs-count" style="background:#f1f5f9;padding:1px 7px;border-radius:10px;font-size:0.75rem;margin-left:4px;">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('forms')" id="tab-btn-forms">
+                <i class="fa-solid fa-file-pen"></i> Formulários
+                <span id="tab-forms-count" style="background:#f1f5f9;padding:1px 7px;border-radius:10px;font-size:0.75rem;margin-left:4px;">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('participants')" id="tab-btn-participants">
+                <i class="fa-solid fa-users"></i> Participantes
+                <span id="tab-participants-count" style="background:#f1f5f9;padding:1px 7px;border-radius:10px;font-size:0.75rem;margin-left:4px;">0</span>
+            </button>
+        </div>
+
+        <!-- Tab: Documents (Procedimentos) -->
+        <div class="tab-panel active" id="tab-docs">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-file-lines"></i> Procedimentos e Instruções</h3>
+                    <div style="display:flex;gap:8px;" id="docs-actions"></div>
+                </div>
+                <div class="card-body" id="docs-body">
+                    <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Carregando...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Forms -->
+        <div class="tab-panel" id="tab-forms">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-file-pen"></i> Formulários</h3>
+                    <div style="display:flex;gap:8px;" id="forms-actions"></div>
+                </div>
+                <div class="card-body" id="forms-body">
+                    <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Carregando...</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Participants -->
+        <div class="tab-panel" id="tab-participants">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-users"></i> Participantes da Área</h3>
+                    <div id="participants-actions"></div>
+                </div>
+                <div class="card-body">
+                    <div class="table-controls">
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="participant-search" placeholder="Buscar participante..." oninput="filterParticipants()">
+                        </div>
+                    </div>
+                    <div id="participants-body">
+                        <div class="empty-state"><i class="fa-solid fa-circle-notch fa-spin"></i><p>Carregando...</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back button -->
+        <div style="margin-top:8px;">
+            <a href="index.html" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal: Upload Novo Documento -->
+<div class="modal-overlay" id="modal-upload">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-file-arrow-up"></i> Anexar Novo Documento</h3>
+            <button class="modal-close" onclick="closeModal('modal-upload')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Nome do Documento *</label>
+                <input type="text" class="input-modern" id="upload-nome" placeholder="Ex: Procedimento de Compras">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                    <label>Sigla *</label>
+                    <input type="text" class="input-modern" id="upload-sigla" placeholder="Ex: PC-001">
+                </div>
+                <div class="form-group">
+                    <label>Tipo *</label>
+                    <select class="input-modern" id="upload-tipo">
+                        <option value="">-- Selecione --</option>
+                        <option value="1">Procedimentos/Instruções</option>
+                        <option value="2">Formulários</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Selecionar arquivo</label>
+                <input type="file" id="upload-file" style="width:100%;padding:6px 0;">
+            </div>
+            
+            <div style="border-top:1px solid var(--border-color); margin-top: 16px; padding-top: 16px; margin-bottom: 16px;">
+                <label style="display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer;margin-bottom:12px;">
+                    <input type="checkbox" id="upload-requer-aprovacao" style="width:16px;height:16px;accent-color:var(--primary-color);" onchange="toggleAprovadorDoc()"> Requer Aprovação Específica?
+                </label>
+                <div class="hidden" id="div-upload-aprovador">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Aprovador Autorizado *</label>
+                    <select class="input-modern" id="upload-aprovador" style="width:100%">
+                        <option value="">-- Selecione o Aprovador --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:var(--radius-sm);padding:10px 14px;font-size:0.8rem;color:#856404;display:flex;gap:8px;align-items:flex-start;">
+                <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;flex-shrink:0;"></i>
+                <div>
+                    <strong>Atenção:</strong> O nome do arquivo não deve conter caracteres especiais (ã, ú, ç, etc.).<br>
+                    O arquivo deve ter o mesmo nome que a sigla informada.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-upload')">Cancelar</button>
+            <button class="btn btn-primary" onclick="uploadDocument()"><i class="fa-solid fa-upload"></i> Anexar Documento</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Atualizar Documento -->
+<div class="modal-overlay" id="modal-update">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="modal-update-title"><i class="fa-solid fa-file-circle-plus"></i> Atualizar Documento</h3>
+            <button class="modal-close" onclick="closeModal('modal-update')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Documento a ser atualizado *</label>
+                <select class="input-modern" id="update-doc-select">
+                    <option value="">-- Selecione --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nova versão do arquivo</label>
+                <input type="file" id="update-file" style="width:100%;padding:6px 0;">
+            </div>
+            <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:var(--radius-sm);padding:10px 14px;font-size:0.8rem;color:#856404;display:flex;gap:8px;align-items:flex-start;">
+                <i class="fa-solid fa-triangle-exclamation" style="margin-top:2px;flex-shrink:0;"></i>
+                <div>O arquivo deve ter o mesmo nome que a sigla do documento a ser atualizado.</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-update')">Cancelar</button>
+            <button class="btn btn-primary" onclick="updateDocument()"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Adicionar Participante -->
+<div class="modal-overlay" id="modal-participant">
+    <div class="modal-box modal-lg">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-plus"></i> Inserir Novo Participante</h3>
+            <button class="modal-close" onclick="closeModal('modal-participant')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="search-bar" style="margin-bottom:14px;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="add-participant-search" placeholder="Buscar usuário..." oninput="filterAvailableUsers()">
+            </div>
+            <div style="max-height:320px;overflow-y:auto;" id="available-users-list">
+                <!-- populated by JS -->
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;margin-top:16px;flex-wrap:wrap;">
+                <div class="form-group" style="margin:0;display:flex;align-items:center;gap:8px;">
+                    <label style="margin:0;white-space:nowrap;">Tipo:</label>
+                    <select class="input-modern" id="participant-type" style="width:160px;">
+                        <option value="0">Visualizador</option>
+                        <option value="1">Participante</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="toggleSelectAll()">
+                    <i class="fa-solid fa-check-square"></i> Marcar/Desmarcar Todos
+                </button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-participant')">Cancelar</button>
+            <button class="btn btn-success" id="btn-add-participants" onclick="addParticipants()" disabled>
+                <i class="fa-solid fa-user-plus"></i> Incluir Selecionados
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Aprovar Documento -->
+<div class="modal-overlay" id="modal-approve">
+    <div class="modal-box" style="width:440px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-stamp" style="color:#198754;"></i> Aprovar Documento</h3>
+            <button class="modal-close" onclick="closeModal('modal-approve')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Ação para o documento <strong id="approve-doc-name"></strong>.</p>
+            <div style="margin-top:12px;">
+                <label style="font-size:0.85rem;font-weight:600;">Motivo (Obrigatório em caso de Reprovação)</label>
+                <textarea id="motivo-reprovacao" class="input-modern" style="width:100%;padding:8px;height:60px;margin-top:6px;resize:vertical;" placeholder="Explique por que o documento está sendo reprovado..."></textarea>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;">
+                Sua ação ficará registrada com data e hora atuais.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-approve')">Cancelar</button>
+            <button class="btn btn-danger" onclick="confirmReject()"><i class="fa-solid fa-xmark"></i> Reprovar</button>
+            <button class="btn btn-success" onclick="confirmApprove()"><i class="fa-solid fa-check"></i> Confirmar Aprovação</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Leituras do Documento -->
+<div class="modal-overlay" id="modal-readings">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-eye"></i> Leituras do Documento</h3>
+            <button class="modal-close" onclick="closeModal('modal-readings')">&times;</button>
+        </div>
+        <div class="modal-body" id="readings-body">
+            <!-- populated by JS -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('modal-readings')">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="processo.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Chamado | BrSupply Help Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <button class="btn btn-secondary" onclick="window.history.back()" style="padding: 8px 12px; margin-right: 16px;">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <a href="index.html" class="logo">
+            <div class="logo-main"><span class="br">Br</span><span class="supply">SUPPLY</span></div>
+        </a>
+        <div class="top-bar-divider"></div>
+        <div class="page-title-bar">
+            <i class="fa-solid fa-plus-circle"></i>
+            Abrir Novo Chamado
+        </div>
+        <div class="top-bar-actions">
+            <div class="user-profile-circle">AD</div>
+        </div>
+    </header>
+
+    <div class="content-area">
+        
+        <div class="card form-card" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-file-signature"></i> Dados do Atendimento</h3>
+            </div>
+            <div class="card-body">
+                
+                <!-- Important Notice -->
+                <div class="notice-panel" style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 4px; margin-bottom: 24px;">
+                    <p style="color: #b45309; font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> IMPORTANTE!</p>
+                    <p style="color: #d97706; font-size: 0.9rem;">Para agilizar o atendimento, descreva o problema de forma clara. Insira o máximo de informações possíveis na descrição do chamado.</p>
+                </div>
+
+                <form id="ticket-form" onsubmit="handleTicketSubmit(event)">
+                    
+                    <!-- Open on Behalf of (Conditional UI) -->
+                    <div id="on-behalf-section" class="hidden" style="margin-bottom: 24px;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #475569; font-size: 0.9rem;">Usuário *</label>
+                        <div style="background: #ffffdb; border: 1px solid #eab308; padding: 20px; border-radius: 8px;">
+                            <p style="color: #854d0e; font-weight: 700; margin-bottom: 12px;">
+                                Você está abrindo este chamado em nome de outro usuário. <br />
+                                <span style="font-weight: 500; font-size: 0.9rem;">Selecione-o na lista:</span>
+                            </p>
+                            <select id="input-usuario-abertura" class="input-modern" style="width: 100%; border-color: #eab308;">
+                                <option value="">-- Selecione o Usuário --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                        
+                        <div class="form-group">
+                            <label>Área Demandada *</label>
+                            <select id="input-area" class="input-modern" style="width: 100%;" onchange="onAreaChange()" required>
+                                <option value="">-- Selecione a Área --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nível de Atendimento *</label>
+                            <select id="input-nivel" class="input-modern" style="width: 100%;" onchange="onNivelChange()" required disabled>
+                                <option value="">Selecione uma Área primeiro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo de Ocorrência / Problema *</label>
+                            <select id="input-problema" class="input-modern" style="width: 100%;" required disabled>
+                                <option value="">Selecione um Nível primeiro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descrição Detalhada do Chamado *</label>
+                            <textarea id="input-descricao" class="input-modern" style="width: 100%; height: 200px; resize: vertical;" placeholder="Descreva aqui o problema, erro ou solicitação com detalhes..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-footer" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Gravar Chamado</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Add specific styles for inputs in edita_chamado */
+    .input-modern {
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        outline: none;
+    }
+    .input-modern:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(247, 143, 30, 0.1);
+    }
+    .input-modern:disabled {
+        background-color: #f8fafc;
+        cursor: not-allowed;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+    .hidden { display: none; }
+</style>
+
+<script src="app.js"></script>
+<script>
+    // Specific initialization for this page
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('func') === 'EmNome') {
+            document.getElementById('on-behalf-section').classList.remove('hidden');
+            populateUsers();
+        }
+        populateAreas();
+    });
+
+    function handleTicketSubmit(e) {
+        e.preventDefault();
+        alert('Chamado gravado com sucesso! (Demonstração)');
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>

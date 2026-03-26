@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Desk BrSupply | Central de Atendimento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <a href="index.html" class="logo">
+            <div class="logo-main"><span class="br">Br</span><span class="supply">SUPPLY</span></div>
+            <div class="logo-sub">Suprimentos Corporativos</div>
+        </a>
+        <div class="top-bar-divider"></div>
+        <div class="page-title-bar">
+            <i class="fa-solid fa-headset"></i>
+            Help Desk – Central de Atendimento TI
+        </div>
+        <div class="top-bar-actions">
+            <button class="btn btn-primary" onclick="openTicketModal()">
+                <i class="fa-solid fa-plus"></i> Novo Chamado
+            </button>
+            <div class="user-profile-circle">AD</div>
+        </div>
+    </header>
+
+    <div class="content-area">
+        
+        <!-- Global Navigation Menu -->
+        <nav class="nav-bar">
+            <div class="nav-container">
+                <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="listachamados.html" class="nav-item"><i class="fa-solid fa-ticket"></i> Meus Chamados</a>
+                <a href="listachamadosatendimento.html" class="nav-item"><i class="fa-solid fa-microchip"></i> Painel de Atendimento</a>
+                <a href="arquivos.html" class="nav-item"><i class="fa-solid fa-folder-open"></i> Arquivos</a>
+                <a href="#" class="nav-item" onclick="openTicketModal('EmNome')"><i class="fa-solid fa-user-pen"></i> Abrir em Nome</a>
+                <a href="listatodoschamados.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i> Relatórios</a>
+
+            </div>
+        </nav>
+
+        <!-- Panels Row -->
+        <div class="dashboard-panels">
+            
+            <!-- Meus Atendimentos (Orange/Warning Theme) -->
+            <div class="panel panel-warning">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-user-gear"></i> Meus Atendimentos</h3>
+                </div>
+                <div class="panel-body">
+                    <p class="panel-info-text">Chamados que aguardam uma ação sua.</p>
+                    <table class="summary-table">
+                        <tbody id="atendimentos-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Meus Chamados (Blue/Info Theme) -->
+            <div class="panel panel-info">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-user-plus"></i> Meus Chamados</h3>
+                </div>
+                <div class="panel-body">
+                    <p class="panel-info-text">Chamados que você abriu.</p>
+                    <table class="summary-table">
+                        <tbody id="chamados-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Responsabilidade Section -->
+        <div class="card responsibility-card">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-sitemap"></i> Áreas e Problemas de Sua Responsabilidade</h3>
+            </div>
+            <div class="card-body">
+                <p class="info-text">Você está inserido na hierarquia de atendimento das áreas e problemas listados abaixo.</p>
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Área</th>
+                                <th>Nível de Atendimento</th>
+                                <th>Tipo de Problema</th>
+                                <th>Cliente</th>
+                                <th class="al-center">Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="responsabilidade-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: Novo Chamado -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-plus-circle"></i> Abrir Novo Chamado</h3>
+                <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Notice Panel -->
+                <div class="notice-panel" style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+                    <p style="color: #b45309; font-weight: 800; font-size: 0.85rem; margin-bottom: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> IMPORTANTE!</p>
+                    <p style="color: #d97706; font-size: 0.8rem; margin: 0;">Descreva o problema de forma clara para agilizar o atendimento.</p>
+                </div>
+
+                <form id="ticket-form" onsubmit="handleTicketSubmit(event)">
+                    <!-- On Behalf Section (Conditional) -->
+                    <div id="modal-on-behalf-section" class="hidden">
+                        <div class="on-behalf-panel">
+                            <p><i class="fa-solid fa-user-pen"></i> Você está abrindo este chamado em nome de outro usuário. Selecione-o na lista:</p>
+                            <label class="modal-label">Usuário *</label>
+                            <select class="modal-select" id="modal-usuario-abertura">
+                                <option value="">-- Selecione o Usuário --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group-modal">
+                        <label class="modal-label">Área Demandada *</label>
+                        <select class="modal-select" id="modal-area" onchange="onModalAreaChange()">
+                            <option value="">-- Selecione a Área --</option>
+                        </select>
+                    </div>
+                    <div class="form-group-modal">
+                        <label class="modal-label">Nível de Atendimento *</label>
+                        <select class="modal-select" id="modal-nivel" onchange="onModalNivelChange()" disabled>
+                            <option value="">Selecione uma Área primeiro</option>
+                        </select>
+                    </div>
+                    <div class="form-group-modal">
+                        <label class="modal-label">Tipo de Ocorrência / Problema *</label>
+                        <select class="modal-select" id="modal-problema" disabled>
+                            <option value="">Selecione um Nível primeiro</option>
+                        </select>
+                    </div>
+                    <div class="form-group-modal">
+                        <label class="modal-label">Descrição Resumida do Problema *</label>
+                        <textarea class="modal-textarea" id="modal-descricao" placeholder="Descreva o problema de forma clara..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                        <button type="button" class="btn btn-secondary" onclick="closeTicketModal()" style="border-radius: 8px; padding: 10px 24px;">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: white; border: none; font-weight: 700; border-radius: 8px; padding: 10px 24px; box-shadow: 0 4px 6px -1px rgba(247, 143, 30, 0.2);">Gravar Chamado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
